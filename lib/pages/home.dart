@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/utils.dart';
 import 'package:meteoapp/Model/meteoModel.dart';
@@ -18,6 +19,16 @@ class _HomeState extends State<Home> {
   @override
   late WeatherData weatherInfo;
   bool isLoading = false;
+
+  void _rechercheVille(String ville) {
+    WeatherServices().fetchWeaterByName(ville).then((value) {
+      setState(() {
+        weatherInfo = value;
+        isLoading = true;
+      });
+    });
+  }
+
   myWeather() {
     isLoading = false;
     WeatherServices().fetchWeather().then((value) {
@@ -28,8 +39,11 @@ class _HomeState extends State<Home> {
     });
   }
 
+  final TextEditingController _controller = TextEditingController();
   void initState() {
     // TODO: implement initState
+
+    // fetchWeaterByN(_controller.text);
 
     weatherInfo = WeatherData(
       name: '',
@@ -55,13 +69,35 @@ class _HomeState extends State<Home> {
     String formattedTime = DateFormat('hh:mm a').format(DateTime.now());
     return Scaffold(
       appBar: AppBar(
+        title: SizedBox(
+          height: 40,
+          child: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              hintText: 'Rechercher...',
+              suffixIcon: IconButton(
+                onPressed: () {
+                  _rechercheVille(_controller.text);
+                },
+                icon: Icon(Icons.search),
+              ),
+              contentPadding: EdgeInsets.symmetric(vertical: 0),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              filled: true,
+              fillColor: Colors.white,
+            ),
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             Get.find<Themecontroller>().switchTheme();
           },
-          icon: Icon(Icons.switch_access_shortcut),
+          icon: Icon(Icons.brightness_6),
         ),
       ),
+
       body: SingleChildScrollView(
         child: Container(
           margin: EdgeInsets.only(top: 20, left: 15, right: 15, bottom: 15),

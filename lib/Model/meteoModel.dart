@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+
 class WeatherData {
   final String name;
   final Temperature temperature;
@@ -72,3 +76,5 @@ class Wind {
     return Wind(speed: json['speed']);
   }
 }
+
+//
