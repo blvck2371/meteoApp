@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:meteoapp/Model/meteoModel.dart';
 
@@ -29,46 +30,34 @@ class WeatherServices {
   }
 
   //fonction pour rechercher pas ville
+  Future<WeatherData?> fetchWeatherByName(
+    String name,
+    BuildContext context,
+  ) async {
+    http.Response response;
 
-  Future<WeatherData> fetchWeaterByName(String name) async {
     if (name.isEmpty) {
-      final response = await http.get(
+      response = await http.get(
         Uri.parse(
-          //"https://api.openweathermap.org/data/2.5/weather?lat=28.5175&lon=81.7787&appid=509079b22fae7e954dff8403ef5eba0e",
           "https://api.openweathermap.org/data/2.5/weather?lat=48.8566&lon=2.3522&appid=509079b22fae7e954dff8403ef5eba0e",
         ),
       );
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        return WeatherData.fromJson(
-          jsonDecode(response.body) as Map<String, dynamic>,
-        );
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to load album');
-      }
     } else {
-      final response = await http.get(
+      response = await http.get(
         Uri.parse(
           'https://api.openweathermap.org/data/2.5/weather?q=$name&appid=509079b22fae7e954dff8403ef5eba0e',
         ),
       );
+    }
 
-      print(response.statusCode.toString() + 'ok');
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        return WeatherData.fromJson(
-          jsonDecode(response.body) as Map<String, dynamic>,
-        );
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        throw Exception('Failed to load album');
-      }
+    print('${response.statusCode}');
+
+    if (response.statusCode == 200) {
+      return WeatherData.fromJson(
+        jsonDecode(response.body) as Map<String, dynamic>,
+      );
+    } else {
+      return null; // évite le crash
     }
   }
 }

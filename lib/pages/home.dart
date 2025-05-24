@@ -21,11 +21,25 @@ class _HomeState extends State<Home> {
   bool isLoading = false;
 
   void _rechercheVille(String ville) {
-    WeatherServices().fetchWeaterByName(ville).then((value) {
-      setState(() {
-        weatherInfo = value;
-        isLoading = true;
-      });
+    WeatherServices().fetchWeatherByName(ville, context).then((value) {
+      print('voici la valeurr');
+      print(value);
+      print('voici la valeurr');
+
+      if (value.isNull) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('cette ville est innexistant'),
+            backgroundColor: const Color.fromARGB(255, 203, 19, 6),
+            duration: Duration(seconds: 5),
+          ),
+        );
+      } else {
+        setState(() {
+          weatherInfo = value!;
+          isLoading = true;
+        });
+      }
     });
   }
 
@@ -75,7 +89,7 @@ class _HomeState extends State<Home> {
             controller: _controller,
             decoration: InputDecoration(
               hintText: 'Rechercher...',
-              suffixIcon: IconButton(
+              prefixIcon: IconButton(
                 onPressed: () {
                   _rechercheVille(_controller.text);
                 },
