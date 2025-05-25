@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       themeMode: themeController.themeMode.value,
       theme: Apptheme.lightTheme,
       darkTheme: Apptheme.darkTheme,
-
+      // end config theme
       home: Home(),
     );
   }
